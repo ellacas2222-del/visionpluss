@@ -55,7 +55,7 @@ public class ChunkFinder {
 			if (cell.count() < c.chunkAlertMin) continue;
 			long key = ((long) cell.cx() << 32) ^ (cell.cz() & 0xFFFFFFFFL);
 			if (announced.add(key)) {
-				mc.getToastManager().addToast(new PlayerToast(null, "Mercury - Suspicious chunk",
+				mc.gui.toastManager().addToast(new PlayerToast(null, "Mercury - Suspicious chunk",
 					cell.count() + " containers at " + (cell.cx() * 16) + ", " + (cell.cz() * 16)));
 				shown++;
 			}
