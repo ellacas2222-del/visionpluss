@@ -79,8 +79,29 @@ public class ConfigScreen extends Screen {
 			c.shulker = next(c.shulker); b.setMessage(Component.literal("Shulker: " + colorName(c.shulker)));
 		}).bounds(x2, y + s * 4, w, h).build());
 
+
+		// Chunk finder + jugadores
+		addRenderableWidget(Button.builder(Component.literal("Chunk finder: " + onOff(c.chunkFinder)), b -> {
+			c.chunkFinder = !c.chunkFinder; b.setMessage(Component.literal("Chunk finder: " + onOff(c.chunkFinder)));
+		}).bounds(x, y + s * 6, w, h).build());
+		addRenderableWidget(Button.builder(Component.literal("Min. cofres por chunk: " + c.chunkMin), b -> {
+			int[] opts = {1, 2, 3, 5, 8, 12};
+			int n = opts[0];
+			for (int i = 0; i < opts.length; i++) if (opts[i] == c.chunkMin) { n = opts[(i + 1) % opts.length]; break; }
+			c.chunkMin = n; b.setMessage(Component.literal("Min. cofres por chunk: " + c.chunkMin));
+		}).bounds(x2, y + s * 5, w, h).build());
+		addRenderableWidget(Button.builder(Component.literal("Aviso de jugadores: " + onOff(c.playerAlert)), b -> {
+			c.playerAlert = !c.playerAlert; b.setMessage(Component.literal("Aviso de jugadores: " + onOff(c.playerAlert)));
+		}).bounds(x2, y + s * 6, w, h).build());
+		addRenderableWidget(Button.builder(Component.literal("Hitbox invisibles: " + onOff(c.invisBoxes)), b -> {
+			c.invisBoxes = !c.invisBoxes; b.setMessage(Component.literal("Hitbox invisibles: " + onOff(c.invisBoxes)));
+		}).bounds(x, y + s * 7, w, h).build());
+		addRenderableWidget(Button.builder(Component.literal("Color invisibles: " + colorName(c.invis)), b -> {
+			c.invis = next(c.invis); b.setMessage(Component.literal("Color invisibles: " + colorName(c.invis)));
+		}).bounds(x2, y + s * 7, w, h).build());
+
 		addRenderableWidget(Button.builder(Component.literal("Listo"), b -> onClose())
-			.bounds(this.width / 2 - 100, y + s * 7, 200, h).build());
+			.bounds(this.width / 2 - 100, y + s * 8 + 6, 200, h).build());
 	}
 
 	@Override

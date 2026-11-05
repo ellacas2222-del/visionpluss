@@ -35,6 +35,8 @@ public class VisionplusClient implements ClientModInitializer {
 				mc.setScreenAndShow(new ConfigScreen());
 			}
 			Scanner.tick(mc);
+			ChunkFinder.tick(mc);
+			PlayerWatch.tick(mc);
 		});
 
 		EspRenderer.register();

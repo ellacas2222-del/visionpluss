@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.lang.reflect.Method;
@@ -50,23 +52,52 @@ public class EspRenderer {
 	public static void register() {
 		LevelRenderEvents.COLLECT_SUBMITS.register(ctx -> {
 			VPConfig c = VPConfig.I;
-			if (!c.enabled || Scanner.targets.isEmpty()) return;
+			if (!c.enabled) return;
 			Minecraft mc = Minecraft.getInstance();
-			if (mc.player == null) return;
+			if (mc.player == null || mc.level == null) return;
+
+			boolean anyTargets = !Scanner.targets.isEmpty();
+			boolean anyChunks = c.chunkFinder && !ChunkFinder.cells.isEmpty();
+			boolean anyInvis = c.invisBoxes;
+			if (!anyTargets && !anyChunks && !anyInvis) return;
 
 			Vec3 cam = mc.gameRenderer.mainCamera().position();
 			Vec3 look = mc.player.getLookAngle();
 			double ox = look.x * 0.5, oy = look.y * 0.5, oz = look.z * 0.5;
 
 			ctx.submitNodeCollector().submitCustomGeometry(ctx.poseStack(), type(), (pose, vc) -> {
+				// Cofres
 				for (Scanner.Target t : Scanner.targets) {
 					float r = ((t.color() >> 16) & 255) / 255f;
 					float g = ((t.color() >> 8) & 255) / 255f;
 					float b = (t.color() & 255) / 255f;
 					double x0 = t.pos().getX() - cam.x, y0 = t.pos().getY() - cam.y, z0 = t.pos().getZ() - cam.z;
-
 					if (c.boxes) box(pose, vc, x0, y0, z0, x0 + 1, y0 + 1, z0 + 1, r, g, b, c.alpha, c.lineWidth);
 					if (c.tracers) line(pose, vc, ox, oy, oz, x0 + 0.5, y0 + 0.5, z0 + 0.5, r, g, b, c.alpha, c.lineWidth);
+				}
+
+				// Chunk finder
+				if (c.chunkFinder) {
+					for (ChunkFinder.Cell cell : ChunkFinder.cells) {
+						int col = ChunkFinder.color(cell.count());
+						float r = ((col >> 16) & 255) / 255f, g = ((col >> 8) & 255) / 255f, b = (col & 255) / 255f;
+						double x0 = cell.cx() * 16 - cam.x, z0 = cell.cz() * 16 - cam.z;
+						double y0 = cell.minY() - 1 - cam.y, y1 = cell.maxY() + 2 - cam.y;
+						box(pose, vc, x0, y0, z0, x0 + 16, y1, z0 + 16, r, g, b, c.alpha, c.lineWidth);
+					}
+				}
+
+				// Hitbox de jugadores invisibles (no espectadores)
+				if (c.invisBoxes) {
+					float r = ((c.invis >> 16) & 255) / 255f, g = ((c.invis >> 8) & 255) / 255f, b = (c.invis & 255) / 255f;
+					for (Player p : mc.level.players()) {
+						if (p == mc.player || p.isSpectator() || !p.isInvisible()) continue;
+						AABB bb = p.getBoundingBox();
+						box(pose, vc, bb.minX - cam.x, bb.minY - cam.y, bb.minZ - cam.z,
+							bb.maxX - cam.x, bb.maxY - cam.y, bb.maxZ - cam.z, r, g, b, c.alpha, c.lineWidth);
+						if (c.tracers) line(pose, vc, ox, oy, oz, (bb.minX + bb.maxX) / 2 - cam.x,
+							(bb.minY + bb.maxY) / 2 - cam.y, (bb.minZ + bb.maxZ) / 2 - cam.z, r, g, b, c.alpha, c.lineWidth);
+					}
 				}
 			});
 		});

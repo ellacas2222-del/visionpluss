@@ -1,0 +1,54 @@
+package com.visionplus.client;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/** Marca los chunks que tienen muchos contenedores (posibles bases). */
+public class ChunkFinder {
+	public record Cell(int cx, int cz, int count, int minY, int maxY) {}
+
+	public static volatile List<Cell> cells = List.of();
+	private static int tick = 0;
+
+	public static void tick(Minecraft mc) {
+		VPConfig c = VPConfig.I;
+		if (mc.level == null || mc.player == null || !c.enabled || !c.chunkFinder) {
+			cells = List.of();
+			return;
+		}
+		if (tick++ % 20 != 0) return;
+
+		int pcx = mc.player.blockPosition().getX() >> 4;
+		int pcz = mc.player.blockPosition().getZ() >> 4;
+		int r = c.chunkRange;
+		List<Cell> out = new ArrayList<>();
+		for (int cx = pcx - r; cx <= pcx + r; cx++) {
+			for (int cz = pcz - r; cz <= pcz + r; cz++) {
+				LevelChunk chunk = mc.level.getChunkSource().getChunkNow(cx, cz);
+				if (chunk == null) continue;
+				int count = 0, minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
+				for (BlockEntity be : chunk.getBlockEntities().values()) {
+					if (!(be instanceof Container)) continue;
+					count++;
+					int y = be.getBlockPos().getY();
+					if (y < minY) minY = y;
+					if (y > maxY) maxY = y;
+				}
+				if (count >= c.chunkMin) out.add(new Cell(cx, cz, count, minY, maxY));
+			}
+		}
+		cells = out;
+	}
+
+	/** Color segun cantidad: verde -> naranja -> rojo. */
+	public static int color(int count) {
+		if (count >= 25) return 0xFF3030;
+		if (count >= 10) return 0xFFA500;
+		return 0x40FF40;
+	}
+}

@@ -25,6 +25,15 @@ public class VPConfig {
 	public int ender = 0xB040FF;
 	public int barrel = 0x8B5A2B;
 	public int shulker = 0x40E0FF;
+	// chunk finder
+	public boolean chunkFinder = true;
+	public int chunkMin = 3;       // minimo de contenedores para marcar un chunk
+	public int chunkRange = 10;    // radio en chunks
+	// jugadores
+	public boolean playerAlert = true;
+	public int alertChunks = 9;
+	public boolean invisBoxes = true;
+	public int invis = 0xFFFFFF;
 
 	public static void load() {
 		try {
