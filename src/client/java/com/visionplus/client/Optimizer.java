@@ -2,7 +2,7 @@ package com.visionplus.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.ParticleStatus;
+import net.minecraft.server.level.ParticleStatus;
 
 /** Ultra optimizador: baja los ajustes pesados del juego y los restaura al apagarlo. */
 public class Optimizer {
