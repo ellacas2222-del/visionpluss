@@ -21,7 +21,7 @@ public class ChunkFinder {
 			cells = List.of();
 			return;
 		}
-		if (tick++ % 20 != 0) return;
+		if (tick++ % 40 != 0) return;
 
 		int pcx = mc.player.blockPosition().getX() >> 4;
 		int pcz = mc.player.blockPosition().getZ() >> 4;
@@ -41,6 +41,10 @@ public class ChunkFinder {
 				}
 				if (count >= c.chunkMin) out.add(new Cell(cx, cz, count, minY, maxY));
 			}
+		}
+		if (out.size() > 64) {
+			out.sort(java.util.Comparator.comparingInt(cell -> -cell.count()));
+			out = new ArrayList<>(out.subList(0, 64));
 		}
 		cells = out;
 	}

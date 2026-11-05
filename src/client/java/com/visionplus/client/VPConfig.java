@@ -19,6 +19,8 @@ public class VPConfig {
 	public boolean tracers = true;
 	public float lineWidth = 2.0f;
 	public float alpha = 1.0f;
+	public float freecamSpeed = 10f; // bloques por segundo
+	public int maxTargets = 150;   // limite de cofres dibujados (los mas cercanos)
 	// colores RGB (0xRRGGBB)
 	public int chest = 0xFFA500;
 	public int trapped = 0xFF3030;

@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-/** Menu de ajustes de Vision Plus. */
+/** Menu de ajustes de Mercury Client. */
 public class ConfigScreen extends Screen {
 	private static final int[] PALETTE = {
 		0xFF3030, 0xFFA500, 0xFFFF00, 0x40FF40, 0x40E0FF, 0x4060FF, 0xB040FF, 0xFF60C0, 0xFFFFFF, 0x8B5A2B
@@ -15,7 +15,7 @@ public class ConfigScreen extends Screen {
 	};
 
 	public ConfigScreen() {
-		super(Component.literal("Vision Plus"));
+		super(Component.literal("Mercury Client"));
 	}
 
 	private static String colorName(int c) {
@@ -33,7 +33,7 @@ public class ConfigScreen extends Screen {
 	@Override
 	protected void init() {
 		VPConfig c = VPConfig.I;
-		int w = 200, h = 20, x = this.width / 2 - w - 5, x2 = this.width / 2 + 5, y = 30, s = 24;
+		int w = 200, h = 20, x = this.width / 2 - w - 5, x2 = this.width / 2 + 5, y = 20, s = 21;
 
 		// Columna izquierda
 		addRenderableWidget(Button.builder(Component.literal("Activado: " + onOff(c.enabled)), b -> {
@@ -100,8 +100,24 @@ public class ConfigScreen extends Screen {
 			c.invis = next(c.invis); b.setMessage(Component.literal("Color invisibles: " + colorName(c.invis)));
 		}).bounds(x2, y + s * 7, w, h).build());
 
+		addRenderableWidget(new AbstractSliderButton(x2, y + s * 8, w, h,
+			Component.literal("Max. dibujados: " + c.maxTargets), (c.maxTargets - 20) / 480.0) {
+			@Override protected void updateMessage() { setMessage(Component.literal("Max. dibujados: " + (int) (20 + value * 480))); }
+			@Override protected void applyValue() { c.maxTargets = (int) (20 + value * 480); }
+		});
+
+		addRenderableWidget(Button.builder(Component.literal("Freecam: " + onOff(Freecam.active)), b -> {
+			Freecam.toggle(this.minecraft);
+			b.setMessage(Component.literal("Freecam: " + onOff(Freecam.active)));
+		}).bounds(x, y + s * 8, w, h).build());
+		addRenderableWidget(new AbstractSliderButton(x, y + s * 9, w, h,
+			Component.literal("Velocidad freecam: " + (int) c.freecamSpeed), (c.freecamSpeed - 1) / 49.0) {
+			@Override protected void updateMessage() { setMessage(Component.literal("Velocidad freecam: " + (int) (1 + value * 49))); }
+			@Override protected void applyValue() { c.freecamSpeed = (float) (1 + value * 49); }
+		});
+
 		addRenderableWidget(Button.builder(Component.literal("Listo"), b -> onClose())
-			.bounds(this.width / 2 - 100, y + s * 8 + 6, 200, h).build());
+			.bounds(x2, y + s * 9, w, h).build());
 	}
 
 	@Override

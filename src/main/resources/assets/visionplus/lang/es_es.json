@@ -1,5 +1,6 @@
 {
-	"key.category.visionplus.main": "Vision Plus",
-	"key.visionplus.toggle": "Activar/desactivar Vision Plus",
-	"key.visionplus.menu": "Abrir menú de Vision Plus"
+ "key.category.visionplus.main": "Mercury Client",
+ "key.visionplus.toggle": "Activar/desactivar Mercury Client",
+ "key.visionplus.menu": "Abrir menú de Mercury Client",
+ "key.visionplus.freecam": "Freecam"
 }

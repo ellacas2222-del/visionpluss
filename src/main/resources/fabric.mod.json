@@ -2,15 +2,18 @@
 	"schemaVersion": 1,
 	"id": "visionplus",
 	"version": "${version}",
-	"name": "Vision Plus",
-	"description": "Chester Event: resalta cofres con cajas x-ray y lineas guia.",
-	"authors": ["Chester Event"],
+	"name": "Mercury Client",
+	"description": "Mercury Client: ESP de cofres, chunk finder y mas.",
+	"authors": ["Mercury"],
 	"license": "All-Rights-Reserved",
 	"icon": "assets/visionplus/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": ["com.visionplus.client.VisionplusClient"]
 	},
+	"mixins": [
+		{ "config": "visionplus.client.mixins.json", "environment": "client" }
+	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.2",

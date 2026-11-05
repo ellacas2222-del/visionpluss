@@ -62,7 +62,7 @@ public class EspRenderer {
 			if (!anyTargets && !anyChunks && !anyInvis) return;
 
 			Vec3 cam = mc.gameRenderer.mainCamera().position();
-			Vec3 look = mc.player.getLookAngle();
+			Vec3 look = Freecam.active ? Freecam.look() : mc.player.getLookAngle();
 			double ox = look.x * 0.5, oy = look.y * 0.5, oz = look.z * 0.5;
 
 			ctx.submitNodeCollector().submitCustomGeometry(ctx.poseStack(), type(), (pose, vc) -> {
@@ -115,13 +115,16 @@ public class EspRenderer {
 
 	private static void box(PoseStack.Pose p, VertexConsumer vc, double x1, double y1, double z1,
 							double x2, double y2, double z2, float r, float g, float b, float a, float w) {
-		double[][] v = {
-			{x1, y1, z1}, {x2, y1, z1}, {x2, y1, z2}, {x1, y1, z2},
-			{x1, y2, z1}, {x2, y2, z1}, {x2, y2, z2}, {x1, y2, z2}
-		};
-		int[][] e = {{0,1},{1,2},{2,3},{3,0},{4,5},{5,6},{6,7},{7,4},{0,4},{1,5},{2,6},{3,7}};
-		for (int[] k : e) {
-			line(p, vc, v[k[0]][0], v[k[0]][1], v[k[0]][2], v[k[1]][0], v[k[1]][1], v[k[1]][2], r, g, b, a, w);
+		// 8 esquinas por bits (x=1, y=2, z=4); 12 aristas, sin crear objetos
+		for (int i = 0; i < 8; i++) {
+			for (int bit = 1; bit <= 4; bit <<= 1) {
+				if ((i & bit) != 0) continue;
+				int j = i | bit;
+				line(p, vc,
+					(i & 1) == 0 ? x1 : x2, (i & 2) == 0 ? y1 : y2, (i & 4) == 0 ? z1 : z2,
+					(j & 1) == 0 ? x1 : x2, (j & 2) == 0 ? y1 : y2, (j & 4) == 0 ? z1 : z2,
+					r, g, b, a, w);
+			}
 		}
 	}
 }

@@ -12,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 public class VisionplusClient implements ClientModInitializer {
 	public static KeyMapping toggleKey;
 	public static KeyMapping menuKey;
+	public static KeyMapping freecamKey;
 
 	@Override
 	public void onInitializeClient() {
@@ -22,6 +23,10 @@ public class VisionplusClient implements ClientModInitializer {
 			new KeyMapping("key.visionplus.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, cat));
 		menuKey = KeyMappingHelper.registerKeyMapping(
 			new KeyMapping("key.visionplus.menu", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, cat));
+		freecamKey = KeyMappingHelper.registerKeyMapping(
+			new KeyMapping("key.visionplus.freecam", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, cat));
+
+		ClientTickEvents.START_CLIENT_TICK.register(Freecam::startTick);
 
 		ClientTickEvents.END_CLIENT_TICK.register(mc -> {
 			while (toggleKey.consumeClick()) {
@@ -30,6 +35,9 @@ public class VisionplusClient implements ClientModInitializer {
 				if (mc.player != null) {
 					mc.player.sendOverlayMessage(Component.literal("Vision Plus: " + (VPConfig.I.enabled ? "ACTIVADO" : "DESACTIVADO")));
 				}
+			}
+			while (freecamKey.consumeClick()) {
+				Freecam.toggle(mc);
 			}
 			while (menuKey.consumeClick()) {
 				mc.setScreenAndShow(new ConfigScreen());

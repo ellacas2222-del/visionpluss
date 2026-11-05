@@ -53,6 +53,10 @@ public class Scanner {
 				}
 			}
 		}
+		if (out.size() > c.maxTargets) {
+			out.sort(java.util.Comparator.comparingDouble(t -> t.pos().distSqr(p)));
+			out = new ArrayList<>(out.subList(0, c.maxTargets));
+		}
 		targets = out;
 	}
 }
