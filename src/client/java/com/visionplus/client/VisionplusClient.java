@@ -32,7 +32,7 @@ public class VisionplusClient implements ClientModInitializer {
 				}
 			}
 			while (menuKey.consumeClick()) {
-				mc.setScreen(new ConfigScreen(mc.screen));
+				mc.setScreenAndShow(new ConfigScreen());
 			}
 			Scanner.tick(mc);
 		});

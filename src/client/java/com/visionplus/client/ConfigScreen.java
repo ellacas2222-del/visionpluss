@@ -14,11 +14,8 @@ public class ConfigScreen extends Screen {
 		"Rojo", "Naranja", "Amarillo", "Verde", "Celeste", "Azul", "Morado", "Rosa", "Blanco", "Cafe"
 	};
 
-	private final Screen parent;
-
-	public ConfigScreen(Screen parent) {
+	public ConfigScreen() {
 		super(Component.literal("Vision Plus"));
-		this.parent = parent;
 	}
 
 	private static String colorName(int c) {
@@ -89,6 +86,6 @@ public class ConfigScreen extends Screen {
 	@Override
 	public void onClose() {
 		VPConfig.save();
-		this.minecraft.setScreen(parent);
+		super.onClose();
 	}
 }
