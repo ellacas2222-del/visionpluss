@@ -17,18 +17,15 @@ jobs:
         run: |
           CP=$(find ~/.gradle ~/.m2 -name '*.jar' 2>/dev/null | tr '\n' ':')
           J() { javap -cp "$CP" "$@" 2>&1; }
-          echo "=== CLASES GUI ==="
-          for j in $(find ~/.gradle -name '*.jar'); do unzip -l "$j" 2>/dev/null | grep -E "GuiGraphics|HudElement|HudLayer|DeltaTracker|PlayerFace|PlayerSkin|SkinTexture|RemotePlayer|KeyboardInput|ClientInput|/Input\.class" | awk '{print $4}'; done | sort -u
-          echo "=== Screen ==="; J net.minecraft.client.gui.screens.Screen | grep -iE "render|extract|background"
-          echo "=== Minecraft camera ==="; J net.minecraft.client.Minecraft | grep -iE "cameraentity|getWindow|window|options"
-          echo "=== Camera ==="; J net.minecraft.client.Camera | grep -iE "setup|setPosition|setRotation|rotation|entity"
-          echo "=== Window ==="; J com.mojang.blaze3d.platform.Window | grep -iE "handle|width|height|scaled"
-          echo "=== InputConstants ==="; J com.mojang.blaze3d.platform.InputConstants | grep -iE "isKeyDown"
-          echo "=== Options keys ==="; J net.minecraft.client.Options | grep -iE "keyUp|keyDown|keyLeft|keyRight|keyJump|keyShift|keySprint"
-          echo "=== ClientLevel ==="; J net.minecraft.client.multiplayer.ClientLevel | grep -iE "addEntity|addPlayer|removeEntity|addFreshEntity"
-          echo "=== RemotePlayer ==="; J net.minecraft.client.player.RemotePlayer
-          echo "=== Entity pos ==="; J net.minecraft.world.entity.Entity | grep -iE " setPos\(| setRot\(|noPhysics|setYRot|setXRot|setOldPosAndRot|snapTo|moveTo"
-          echo "=== HUD ==="; for c in $(find ~/.gradle -name '*.jar'); do unzip -l "$c" 2>/dev/null | grep -E "HudElementRegistry|HudRenderCallback" | awk '{print $4}'; done | sort -u
+          echo "=== GuiGraphicsExtractor ==="; J net.minecraft.client.gui.GuiGraphicsExtractor | grep -iE "fill|text|blit|sprite|centered|outline|gradient|scissor"
+          echo "=== HudElement ==="; J net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+          echo "=== HudElementRegistry ==="; J net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+          echo "=== PlayerFaceExtractor ==="; J net.minecraft.client.gui.components.PlayerFaceExtractor
+          echo "=== AbstractWidget ==="; J net.minecraft.client.gui.components.AbstractWidget | grep -iE "extract|alpha|active|visible"
+          echo "=== Button ==="; J net.minecraft.client.gui.components.Button | grep -iE "extract|builder"
+          echo "=== Font ==="; J net.minecraft.client.gui.Font | grep -iE "width|lineHeight"
+          echo "=== AbstractClientPlayer ==="; J net.minecraft.client.player.AbstractClientPlayer | grep -iE "skin"
+          echo "=== Minecraft font ==="; J net.minecraft.client.Minecraft | grep -iE "font|getTextureManager"
       - uses: actions/upload-artifact@v4
         with:
           name: visionplus-jar
