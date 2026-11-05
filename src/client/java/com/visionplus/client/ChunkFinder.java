@@ -6,6 +6,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 /** Marca los chunks que tienen muchos contenedores (posibles bases). */
@@ -14,6 +16,8 @@ public class ChunkFinder {
 
 	public static volatile List<Cell> cells = List.of();
 	private static int tick = 0;
+	private static final Set<Long> announced = new HashSet<>();
+	private static Object lastLevel = null;
 
 	public static void tick(Minecraft mc) {
 		VPConfig c = VPConfig.I;
@@ -21,7 +25,9 @@ public class ChunkFinder {
 			cells = List.of();
 			return;
 		}
-		if (tick++ % 40 != 0) return;
+		if (tick++ % 60 != 0) return;
+
+		if (mc.level != lastLevel) { announced.clear(); lastLevel = mc.level; }
 
 		int pcx = mc.player.blockPosition().getX() >> 4;
 		int pcz = mc.player.blockPosition().getZ() >> 4;
@@ -42,6 +48,19 @@ public class ChunkFinder {
 				if (count >= c.chunkMin) out.add(new Cell(cx, cz, count, minY, maxY));
 			}
 		}
+		// Aviso tipo logro: maximo 2 por revision para no llenar la pantalla
+		int shown = 0;
+		for (Cell cell : out) {
+			if (shown >= 2) break;
+			if (cell.count() < c.chunkAlertMin) continue;
+			long key = ((long) cell.cx() << 32) ^ (cell.cz() & 0xFFFFFFFFL);
+			if (announced.add(key)) {
+				mc.getToastManager().addToast(new PlayerToast(null, "Mercury - Suspicious chunk",
+					cell.count() + " containers at " + (cell.cx() * 16) + ", " + (cell.cz() * 16)));
+				shown++;
+			}
+		}
+
 		if (out.size() > 64) {
 			out.sort(java.util.Comparator.comparingInt(cell -> -cell.count()));
 			out = new ArrayList<>(out.subList(0, 64));

@@ -1,6 +1,6 @@
 {
- "key.category.visionplus.main": "Mercury Client",
- "key.visionplus.toggle": "Toggle Mercury Client",
- "key.visionplus.menu": "Open Mercury Client menu",
+ "key.category.visionplus.main": "Mercury Debug",
+ "key.visionplus.toggle": "Toggle Mercury Debug",
+ "key.visionplus.menu": "Open Mercury Debug menu",
  "key.visionplus.freecam": "Freecam"
 }

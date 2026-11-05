@@ -25,7 +25,7 @@ public class Scanner {
 			targets = List.of();
 			return;
 		}
-		if (tick++ % 10 != 0) return;
+		if (tick++ % 20 != 0) return;
 
 		VPConfig c = VPConfig.I;
 		int range = c.range;

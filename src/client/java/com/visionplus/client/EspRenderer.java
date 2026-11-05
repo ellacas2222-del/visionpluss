@@ -64,6 +64,7 @@ public class EspRenderer {
 			Vec3 cam = mc.gameRenderer.mainCamera().position();
 			Vec3 look = Freecam.active ? Freecam.look() : mc.player.getLookAngle();
 			double ox = look.x * 0.5, oy = look.y * 0.5, oz = look.z * 0.5;
+			final double lx = look.x, ly = look.y, lz = look.z;
 
 			ctx.submitNodeCollector().submitCustomGeometry(ctx.poseStack(), type(), (pose, vc) -> {
 				// Cofres
@@ -72,6 +73,7 @@ public class EspRenderer {
 					float g = ((t.color() >> 8) & 255) / 255f;
 					float b = (t.color() & 255) / 255f;
 					double x0 = t.pos().getX() - cam.x, y0 = t.pos().getY() - cam.y, z0 = t.pos().getZ() - cam.z;
+					if ((x0 + 0.5) * lx + (y0 + 0.5) * ly + (z0 + 0.5) * lz < -1.5) continue; // detras de ti
 					if (c.boxes) box(pose, vc, x0, y0, z0, x0 + 1, y0 + 1, z0 + 1, r, g, b, c.alpha, c.lineWidth);
 					if (c.tracers) line(pose, vc, ox, oy, oz, x0 + 0.5, y0 + 0.5, z0 + 0.5, r, g, b, c.alpha, c.lineWidth);
 				}
@@ -83,6 +85,7 @@ public class EspRenderer {
 						float r = ((col >> 16) & 255) / 255f, g = ((col >> 8) & 255) / 255f, b = (col & 255) / 255f;
 						double x0 = cell.cx() * 16 - cam.x, z0 = cell.cz() * 16 - cam.z;
 						double y0 = cell.minY() - 1 - cam.y, y1 = cell.maxY() + 2 - cam.y;
+						if ((x0 + 8) * lx + ((y0 + y1) / 2) * ly + (z0 + 8) * lz < -14) continue; // detras de ti
 						box(pose, vc, x0, y0, z0, x0 + 16, y1, z0 + 16, r, g, b, c.alpha, c.lineWidth);
 					}
 				}

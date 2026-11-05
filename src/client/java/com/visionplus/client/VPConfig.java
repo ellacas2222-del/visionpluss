@@ -14,6 +14,7 @@ public class VPConfig {
 	public static VPConfig I = new VPConfig();
 
 	public boolean enabled = true;
+	public boolean customTitle = true;
 	public int range = 64;
 	public boolean boxes = true;
 	public boolean tracers = true;
@@ -33,6 +34,9 @@ public class VPConfig {
 	public int chunkRange = 10;    // radio en chunks
 	// jugadores
 	public boolean playerAlert = true;
+	public java.util.List<String> hunterNames = new java.util.ArrayList<>(); // nombres de hunters, se editan en el json
+	public String hunterTeam = "Hunter"; // equipo del servidor cuyos miembros se avisan aunque sean espectadores
+	public int chunkAlertMin = 6;         // contenedores por chunk para el aviso de chunk sospechoso
 	public int alertChunks = 9;
 	public boolean invisBoxes = true;
 	public int invis = 0xFFFFFF;

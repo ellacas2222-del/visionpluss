@@ -1,11 +1,12 @@
 package com.visionplus.client;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-/** Menu de ajustes de Mercury Client. */
+/** Menu de ajustes de Mercury Debug. */
 public class ConfigScreen extends Screen {
 	private static final int[] PALETTE = {
 		0xFF3030, 0xFFA500, 0xFFFF00, 0x40FF40, 0x40E0FF, 0x4060FF, 0xB040FF, 0xFF60C0, 0xFFFFFF, 0x8B5A2B
@@ -15,7 +16,7 @@ public class ConfigScreen extends Screen {
 	};
 
 	public ConfigScreen() {
-		super(Component.literal("Mercury Client"));
+		super(Component.literal("Mercury Debug"));
 	}
 
 	private static String colorName(int c) {
@@ -116,8 +117,18 @@ public class ConfigScreen extends Screen {
 			@Override protected void applyValue() { c.freecamSpeed = (float) (1 + value * 49); }
 		});
 
+		addRenderableWidget(Button.builder(Component.literal("Ultra optimizador: " + onOff(Optimizer.isOn())), b -> {
+			Optimizer.toggle(this.minecraft);
+			b.setMessage(Component.literal("Ultra optimizador: " + onOff(Optimizer.isOn())));
+		}).bounds(x2, y + s * 9, w, h).build());
+
 		addRenderableWidget(Button.builder(Component.literal("Listo"), b -> onClose())
-			.bounds(x2, y + s * 9, w, h).build());
+			.bounds(x, y + s * 10, w * 2 + 10, h).build());
+	}
+
+	@Override
+	public void extractBackground(GuiGraphicsExtractor g, int mx, int my, float pt) {
+		g.fill(0, 0, this.width, this.height, 0xF2050507);
 	}
 
 	@Override
