@@ -9,24 +9,9 @@ jobs:
         with:
           java-version: 25
           distribution: temurin
-      - uses: gradle/actions/setup-gradle@v4
-      - run: chmod +x ./gradlew
+      - run: chmod +x gradlew
       - run: ./gradlew build
-        continue-on-error: true
-      - name: API info
-        run: |
-          CP=$(find ~/.gradle ~/.m2 -name '*.jar' 2>/dev/null | tr '\n' ':')
-          J() { javap -cp "$CP" "$@" 2>&1; }
-          echo "=== GuiGraphicsExtractor ==="; J net.minecraft.client.gui.GuiGraphicsExtractor | grep -iE "fill|text|blit|sprite|centered|outline|gradient|scissor"
-          echo "=== HudElement ==="; J net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
-          echo "=== HudElementRegistry ==="; J net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
-          echo "=== PlayerFaceExtractor ==="; J net.minecraft.client.gui.components.PlayerFaceExtractor
-          echo "=== AbstractWidget ==="; J net.minecraft.client.gui.components.AbstractWidget | grep -iE "extract|alpha|active|visible"
-          echo "=== Button ==="; J net.minecraft.client.gui.components.Button | grep -iE "extract|builder"
-          echo "=== Font ==="; J net.minecraft.client.gui.Font | grep -iE "width|lineHeight"
-          echo "=== AbstractClientPlayer ==="; J net.minecraft.client.player.AbstractClientPlayer | grep -iE "skin"
-          echo "=== Minecraft font ==="; J net.minecraft.client.Minecraft | grep -iE "font|getTextureManager"
       - uses: actions/upload-artifact@v4
         with:
-          name: visionplus-jar
+          name: visionplus
           path: build/libs/
