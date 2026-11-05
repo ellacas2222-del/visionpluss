@@ -41,7 +41,7 @@ public class MercuryTitle extends Screen {
 		switch (i) {
 			case 0 -> this.minecraft.setScreenAndShow(new SelectWorldScreen(this));
 			case 1 -> this.minecraft.setScreenAndShow(new JoinMultiplayerScreen(this));
-			case 2 -> this.minecraft.setScreenAndShow(new OptionsScreen(this, this.minecraft.options));
+			case 2 -> this.minecraft.setScreenAndShow(new OptionsScreen(this, this.minecraft.options, false)
 			case 3 -> this.minecraft.setScreenAndShow(new ConfigScreen());
 			default -> this.minecraft.stop();
 		}
