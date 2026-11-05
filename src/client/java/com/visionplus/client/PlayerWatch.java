@@ -54,7 +54,7 @@ public class PlayerWatch {
 		if (cooldown > 0) cooldown--;
 		if (cooldown == 0 && !queue.isEmpty()) {
 			Msg m = queue.poll();
-			mc.getToastManager().addToast(new PlayerToast(m.skin(), m.title(), m.text()));
+			mc.gui.toastManager().addToast(new PlayerToast(m.skin(), m.title(), m.text()));
 			cooldown = 60;
 		}
 	}
