@@ -12,6 +12,22 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: chmod +x ./gradlew
       - run: ./gradlew build
+        continue-on-error: true
+      - name: API info
+        run: |
+          CP=$(find ~/.gradle ~/.m2 -name '*.jar' 2>/dev/null | tr '\n' ':')
+          J() { javap -cp "$CP" "$@" 2>&1; }
+          echo "=== CLASES ==="
+          for j in $(find ~/.gradle -name '*.jar'); do unzip -l "$j" 2>/dev/null | grep -E "DepthTestFunction|BufferSource|LevelRenderContext|LevelRenderEvents" | sed "s|^|$(basename $j): |"; done
+          echo "=== Minecraft ==="; J net.minecraft.client.Minecraft | grep -iE "screen|gui"
+          echo "=== GameRenderer ==="; J net.minecraft.client.renderer.GameRenderer | grep -iE "camera"
+          echo "=== Camera ==="; J net.minecraft.client.Camera | grep -iE "pos"
+          echo "=== LevelRenderContext ==="; J net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
+          echo "=== LevelRenderEvents ==="; J net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents | head -40
+          echo "=== Builder ==="; J 'com.mojang.blaze3d.pipeline.RenderPipeline$Builder' | grep -i depth
+          echo "=== RenderType ==="; J net.minecraft.client.renderer.rendertype.RenderType | grep -i create
+          echo "=== RenderSetup ==="; J net.minecraft.client.renderer.rendertype.RenderSetup | head -30
+          echo "=== VertexConsumer ==="; J com.mojang.blaze3d.vertex.VertexConsumer | grep -iE "line|normal|color"
       - uses: actions/upload-artifact@v4
         with:
           name: visionplus-jar
